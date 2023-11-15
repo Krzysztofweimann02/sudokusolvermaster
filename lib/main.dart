@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:sudokusolvermaster/SudokuView.dart';
 
 import 'sudokuBoard.dart';
+import 'SudokuView.dart';
+import 'sudokuSolvingAlgorithm.dart';
 
 void main() {
-  final player = AudioPlayer();
-  player.play(AssetSource("music.wav"));
   runApp(const MyApp());
 }
 
@@ -36,6 +37,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final player = AudioPlayer();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    player.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SudokuBoardWidget()
-          ],
+      child: ElevatedButton(
+        child: const Text('Start!'),
+          onPressed: () {
+            player.play(AssetSource("music.mp3"));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SudokuView()),
+            );
+          },
         ),
       ),
     );

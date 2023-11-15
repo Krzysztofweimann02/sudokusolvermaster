@@ -1,3 +1,5 @@
+import 'package:audioplayers/audioplayers.dart';
+
 class SudokuSolvingAlgorithm {
   late List<List<int>> holdBoard;
 
