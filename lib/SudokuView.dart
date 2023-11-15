@@ -19,11 +19,13 @@ class _SudokuViewState extends State<SudokuView> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text("Sudoku Solver")
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SudokuBoardWidget(),
-          ],
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SudokuBoardWidget(),
+            ],
+          ),
         ),
     );
   }
