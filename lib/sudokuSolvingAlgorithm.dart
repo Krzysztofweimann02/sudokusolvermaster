@@ -1,21 +1,15 @@
 class SudokuSolvingAlgorithm {
-  late List<List<int>> sudokuBoard;
-
-  SudokuSolvingAlgorithm(List<List<int>> board) {
-    sudokuBoard = board;
-  }
-
-  bool solve() {
+  bool solve(List<List<int>> board) {
     for (int row = 0; row < 9; row++) {
       for (int col = 0; col < 9; col++) {
-        if (sudokuBoard[row][col] == 0) {
+        if (board[row][col] == 0) {
           for (int num = 1; num <= 9; num++) {
-            if (isSafe(row, col, num)) {
-              sudokuBoard[row][col] = num;
-              if (solve()) {
+            if (isSafe(row, col, num, board)) {
+              board[row][col] = num;
+              if (solve(board)) {
                 return true;
               }
-              sudokuBoard[row][col] = 0;
+              board[row][col] = 0;
             }
           }
           return false;
@@ -25,9 +19,9 @@ class SudokuSolvingAlgorithm {
     return true;
   }
 
-  bool isSafe(int row, int col, int num) {
+  bool isSafe(int row, int col, int num, List<List<int>> board) {
     for (int i = 0; i < 9; i++) {
-      if (sudokuBoard[row][i] == num || sudokuBoard[i][col] == num) {
+      if (board[row][i] == num || board[i][col] == num) {
         return false;
       }
     }
@@ -37,7 +31,7 @@ class SudokuSolvingAlgorithm {
 
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        if (sudokuBoard[startRow + i][startCol + j] == num) {
+        if (board[startRow + i][startCol + j] == num) {
           return false;
         }
       }
