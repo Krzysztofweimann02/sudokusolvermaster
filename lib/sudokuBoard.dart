@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'sudokuSolvingAlgorithm.dart';
 
 class SudokuBoardWidget extends StatefulWidget {
+  const SudokuBoardWidget({super.key});
+
   @override
   _SudokuBoardWidgetState createState() => _SudokuBoardWidgetState();
 }
@@ -199,11 +201,27 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                       ),
                       controller: _userInputControllers.elementAt(index),
                       onChanged: (text) {
-                        _userInputControllers
-                            .elementAt(index)
-                            .text = text;
-                        sudokuBoard[getNumberAt(index)][getRowNumberAt(index)] =
-                            int.parse(text);
+                        try {
+                          _userInputControllers.elementAt(index).text = text;
+                          int parsedValue = int.parse(text);
+
+                          // Sprawdzenie, czy wartość jest pojedynczą cyfrą
+                          if (parsedValue < 1 || parsedValue > 9) {
+                            throw const FormatException('Wprowadź liczbę od 1 do 9');
+                          }
+
+                          // Aktualizacja planszy tylko dla prawidłowych wartości
+                          sudokuBoard[getNumberAt(index)][getRowNumberAt(index)] = parsedValue;
+                        } catch (e) {
+                          final snackBar = const SnackBar(
+                            content: Text('Błąd: Wprowadź liczbę od 1 do 9'),
+                            duration: Duration(seconds: 2),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Future.delayed(const Duration(seconds: 2), () {
+                            _userInputControllers.elementAt(index).text = '';
+                          });
+                        }
                       },
                     ),
                   )
