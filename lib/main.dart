@@ -4,6 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'sudokuBoard.dart';
 
 void main() {
+  final player = AudioPlayer();
+  player.play(AssetSource("music.wav"));
   runApp(const MyApp());
 }
 
@@ -34,7 +36,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
 
   @override
   Widget build(BuildContext context) {
