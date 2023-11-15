@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'sudokuSolvingAlgorithm.dart';
 import 'sudokuBoard.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Sudoku Solver'),
     );
   }
 }
@@ -48,9 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SudokuBoardWidget(
-
-            )
+            SudokuBoardWidget()
           ],
         ),
       ),

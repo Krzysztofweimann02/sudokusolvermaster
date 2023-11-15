@@ -1,4 +1,6 @@
 class SudokuSolvingAlgorithm {
+  late List<List<int>> holdBoard;
+
   bool solve(List<List<int>> board) {
     for (int row = 0; row < 9; row++) {
       for (int col = 0; col < 9; col++) {
@@ -7,6 +9,7 @@ class SudokuSolvingAlgorithm {
             if (isSafe(row, col, num, board)) {
               board[row][col] = num;
               if (solve(board)) {
+                holdBoard = board;
                 return true;
               }
               board[row][col] = 0;
@@ -18,6 +21,8 @@ class SudokuSolvingAlgorithm {
     }
     return true;
   }
+
+  List<List<int>> getResolvedBoard() { return holdBoard; }
 
   bool isSafe(int row, int col, int num, List<List<int>> board) {
     for (int i = 0; i < 9; i++) {
