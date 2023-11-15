@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ class SudokuBoardWidget extends StatefulWidget {
 }
 
 class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
+  final player = AudioPlayer();
   // creating 81 controllers for user input on board
   final List<TextEditingController> _userInputControllers = List.generate(
       81, (i) => TextEditingController());
@@ -85,6 +87,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
   void resetBoard() {
     setState(() {
+      player.play(AssetSource("error.wav"));
       sudokuBoard = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -112,6 +115,52 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
   }
 
   String resultText = '';
+  bool isHover = false;
+  int whichHovered = -1;
+
+  Color setColor(int index) {
+    late Color resultColor;
+
+    if ((isHover && whichHovered != -1) && index == whichHovered) {
+      resultColor = Colors.amber;
+    } else {
+    ((getRowNumberAt(index) == 0) ||
+        (getRowNumberAt(index) == 1) ||
+        (getRowNumberAt(index) == 2) ||
+        (getRowNumberAt(index) == 6) ||
+        (getRowNumberAt(index) == 7) ||
+        (getRowNumberAt(index) == 8)) &&
+        ((getNumberAt(index) == 0) ||
+            (getNumberAt(index) == 1) ||
+            (getNumberAt(index) == 2) ||
+            (getNumberAt(index) == 6) ||
+            (getNumberAt(index) == 7) ||
+            (getNumberAt(index) == 8)) ||
+        ((getNumberAt(index) == 3) &&
+            (getRowNumberAt(index) == 3) ||
+            (getNumberAt(index) == 3) &&
+                (getRowNumberAt(index) == 4) ||
+            (getNumberAt(index) == 3) &&
+                (getRowNumberAt(index) == 5) ||
+            (getNumberAt(index) == 4) &&
+                (getRowNumberAt(index) == 3) ||
+            (getNumberAt(index) == 4) &&
+                (getRowNumberAt(index) == 4) ||
+            (getNumberAt(index) == 4) &&
+                (getRowNumberAt(index) == 5) ||
+            (getNumberAt(index) == 5) &&
+                (getRowNumberAt(index) == 3) ||
+            (getNumberAt(index) == 5) &&
+                (getRowNumberAt(index) == 4) ||
+            (getNumberAt(index) == 5) &&
+                (getRowNumberAt(index) == 5)
+
+
+        ) ? resultColor = Colors.red : resultColor = Colors.blue;
+    }
+
+    return resultColor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,42 +177,19 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
             ),
             itemCount: 81,
             itemBuilder: (context, index) {
-              return Container(
+              return MouseRegion(
+                onEnter: (_) => setState(() {
+                  isHover = true;
+                  whichHovered = index;
+                }),
+                onExit: (_) => setState(() {
+                  isHover = false;
+                  whichHovered = -1;
+                }),
+                child: Container(
                   margin: const EdgeInsets.all(2.0),
                   padding: const EdgeInsets.all(3.0),
-                  color: ((getRowNumberAt(index) == 0) ||
-                      (getRowNumberAt(index) == 1) ||
-                      (getRowNumberAt(index) == 2) ||
-                      (getRowNumberAt(index) == 6) ||
-                      (getRowNumberAt(index) == 7) ||
-                      (getRowNumberAt(index) == 8)) &&
-                      ((getNumberAt(index) == 0) ||
-                          (getNumberAt(index) == 1) ||
-                          (getNumberAt(index) == 2) ||
-                          (getNumberAt(index) == 6) ||
-                          (getNumberAt(index) == 7) ||
-                          (getNumberAt(index) == 8)) ||
-                      ((getNumberAt(index) == 3) &&
-                          (getRowNumberAt(index) == 3) ||
-                          (getNumberAt(index) == 3) &&
-                              (getRowNumberAt(index) == 4) ||
-                          (getNumberAt(index) == 3) &&
-                              (getRowNumberAt(index) == 5) ||
-                          (getNumberAt(index) == 4) &&
-                              (getRowNumberAt(index) == 3) ||
-                          (getNumberAt(index) == 4) &&
-                              (getRowNumberAt(index) == 4) ||
-                          (getNumberAt(index) == 4) &&
-                              (getRowNumberAt(index) == 5) ||
-                          (getNumberAt(index) == 5) &&
-                              (getRowNumberAt(index) == 3) ||
-                          (getNumberAt(index) == 5) &&
-                              (getRowNumberAt(index) == 4) ||
-                          (getNumberAt(index) == 5) &&
-                              (getRowNumberAt(index) == 5)
-
-
-                      ) ? Colors.red : Colors.blue,
+                  color: setColor(index),
                   child: Center(
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -181,6 +207,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                       },
                     ),
                   )
+                ),
               );
             },
           ),
