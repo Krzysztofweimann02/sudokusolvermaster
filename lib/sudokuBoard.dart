@@ -216,17 +216,26 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         Text(resultText),
 
         // Buttons
-        ElevatedButton(
-          onPressed: tryToSolve,
-          child: const Text('Solve'),
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: ElevatedButton(
+            onPressed: tryToSolve,
+            child: const Text('Solve'),
+          ),
         ),
-        ElevatedButton(
-          onPressed: resetBoard,
-          child: const Text('Reset'),
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: ElevatedButton(
+            onPressed: resetBoard,
+            child: const Text('Reset'),
+          ),
         ),
-        ElevatedButton(
-          onPressed: printBoard,
-          child: const Text("DEBUG: PrintBoard()"),
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: ElevatedButton(
+            onPressed: printBoard,
+            child: const Text("DEBUG: PrintBoard()"),
+          ),
         ),
       ],
     );
