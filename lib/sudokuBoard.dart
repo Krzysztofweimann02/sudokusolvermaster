@@ -210,13 +210,29 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             throw const FormatException('Wprowadź liczbę od 1 do 9');
                           }
 
-                          // Aktualizacja planszy tylko dla prawidłowych wartości
-                          sudokuBoard[getNumberAt(index)][getRowNumberAt(index)] = parsedValue;
+                          // Sprawdzenie, czy wprowadzona wartość jest bezpieczna w kontekście Sudoku
+                          int row = getNumberAt(index);
+                          int col = getRowNumberAt(index);
+
+                          if (!algorithm.isSafe(row, col, parsedValue, sudokuBoard)) {
+                            throw const FormatException('Nie z nami takie numery! W wierszu, kolumnie lub kwadracie 3x3 nie możesz wpisać dwóch takich samych liczb');
+                          }
+
+                          sudokuBoard[row][col] = parsedValue;
                         } catch (e) {
-                          final snackBar = const SnackBar(
-                            content: Text('Błąd: Wprowadź liczbę od 1 do 9'),
-                            duration: Duration(seconds: 2),
+                          String errorMessage = 'Błąd: ';
+                          if (e is FormatException) {
+                            errorMessage += e.message;
+                          } else {
+                            errorMessage += 'Nieprawidłowa wartość';
+                          }
+
+
+                          final snackBar = SnackBar(
+                            content: Text(errorMessage),
+                            duration: Duration(seconds: 5),
                           );
+
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           Future.delayed(const Duration(seconds: 2), () {
                             _userInputControllers.elementAt(index).text = '';
