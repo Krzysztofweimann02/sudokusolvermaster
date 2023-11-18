@@ -230,7 +230,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
                           final snackBar = SnackBar(
                             content: Text(errorMessage),
-                            duration: Duration(seconds: 5),
+                            duration: const Duration(seconds: 5),
                           );
 
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
