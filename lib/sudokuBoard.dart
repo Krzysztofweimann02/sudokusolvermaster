@@ -201,9 +201,17 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                       ),
                       controller: _userInputControllers.elementAt(index),
                       onChanged: (text) {
+                        late int previousValue;
+                        late int row;
+                        late int col;
                         try {
                           _userInputControllers.elementAt(index).text = text;
+
+                          row = getNumberAt(index);
+                          col = getRowNumberAt(index);
+
                           int parsedValue = int.parse(text);
+                          previousValue = sudokuBoard[row][col];
 
                           // Sprawdzenie, czy wartość jest pojedynczą cyfrą
                           if (parsedValue < 1 || parsedValue > 9) {
@@ -211,15 +219,12 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                           }
 
                           // Sprawdzenie, czy wprowadzona wartość jest bezpieczna w kontekście Sudoku
-                          int row = getNumberAt(index);
-                          int col = getRowNumberAt(index);
-
                           if (!algorithm.isSafe(row, col, parsedValue, sudokuBoard)) {
                             throw const FormatException('Nie z nami takie numery! W wierszu, kolumnie lub kwadracie 3x3 nie możesz wpisać dwóch takich samych liczb');
                           }
-
                           sudokuBoard[row][col] = parsedValue;
                         } catch (e) {
+                          sudokuBoard[row][col] = previousValue;
                           String errorMessage = 'Błąd: ';
                           if (e is FormatException) {
                             errorMessage += e.message;
@@ -227,14 +232,13 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             errorMessage += 'Nieprawidłowa wartość';
                           }
 
-
                           final snackBar = SnackBar(
                             content: Text(errorMessage),
-                            duration: const Duration(seconds: 5),
+                            duration: const Duration(seconds: 2),
                           );
 
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          Future.delayed(const Duration(seconds: 2), () {
+                          Future.delayed(const Duration(seconds: 1), () {
                             _userInputControllers.elementAt(index).text = '';
                           });
                         }
