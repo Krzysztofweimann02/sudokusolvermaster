@@ -282,16 +282,17 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                           late int previousValue;
                           late int row;
                           late int col;
+
+                          row = getNumberAt(index);
+                          col = getRowNumberAt(index);
+
+                          previousValue = sudokuBoard[row][col];
                           try {
                             _userInputControllers
                                 .elementAt(index)
                                 .text = text;
 
-                            row = getNumberAt(index);
-                            col = getRowNumberAt(index);
-
                             int parsedValue = int.parse(text);
-                            previousValue = sudokuBoard[row][col];
 
                             // Sprawdzenie, czy wartość jest pojedynczą cyfrą
                             if (parsedValue < 1 || parsedValue > 9) {
@@ -308,6 +309,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             sudokuBoard[row][col] = parsedValue;
                           } catch (e) {
                             sudokuBoard[row][col] = previousValue;
+
                             String errorMessage = 'Błąd: ';
                             if (e is FormatException) {
                               errorMessage += e.message;
