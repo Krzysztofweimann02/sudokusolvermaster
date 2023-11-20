@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sudokusolvermaster/SudokuView.dart';
 
+bool darkMode = false;
+
+
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +44,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void didPop() {
+    setState(() {
+
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: darkMode ? Colors.black87 : Colors.white,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: darkMode ? Colors.red[800] : Colors.red[200],
+        title: Text(widget.title, style: TextStyle(
+            color: darkMode ? Colors.white : Colors.black)),
       ),
       body: Center(
       child: ElevatedButton(
         child: const Text('Start!'),
-          onPressed: () {
+          onPressed: () async {
             player.play(AssetSource("click.mp3"));
-            Navigator.push(
+             await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SudokuView()),
             );
-          },
+             setState(() {
+
+             });
+          }
         ),
       ),
     );
