@@ -309,6 +309,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             }
                             sudokuBoard[row][col] = parsedValue;
                           } catch (e) {
+                            playSound("pop.mp3");
                             sudokuBoard[row][col] = previousValue;
 
                             String errorMessage = 'Błąd: ';
@@ -328,7 +329,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             Future.delayed(const Duration(seconds: 3), () {
                               _userInputControllers
                                   .elementAt(index)
-                                  .text = '';
+                                  .text = sudokuBoard[row][col] as String;
                             });
                           }
                         },
