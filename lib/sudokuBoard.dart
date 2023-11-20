@@ -76,15 +76,15 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
   void tryToSolve() {
     setState(() {
-      bool hasMultipleSolutions = false; // Reset flag
+      bool hasMultipleSolutions = false; // flaga
       if (algorithm.solve(sudokuBoard)) {
         if (algorithm.foundFirstSolution) {
           resultText = "Sudoku solved successfully!";
           if (algorithm.holdBoard != null) {
-            hasMultipleSolutions = true; // Set the flag that multiple solutions exist
+            hasMultipleSolutions = true; // flaga - istnieje więcej niż jedno rozwiązanie
           }
         } else {
-          resultText = "Cannot solve that sudoku board";
+          resultText = "Nie mogę rozwiązać tego sudoku";
         }
         fetchBoard();
         updateBoard();
