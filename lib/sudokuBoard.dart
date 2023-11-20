@@ -96,7 +96,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
   void playSound(String sound) async {
     final player = AudioPlayer();
-    if (enableSounds) await player.play(AssetSource(sound));
+    if (enableSounds) await player.setVolume(volume); player.play(AssetSource(sound));
   }
 
   void checkIfMultipleSol() {

@@ -4,6 +4,7 @@ import 'package:sudokusolvermaster/SudokuView.dart';
 
 bool darkMode = false;
 bool enableSounds = true;
+double volume = 1;
 
 
 void main() {
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ElevatedButton(
         child: const Text('Start!'),
           onPressed: () async {
-             if (enableSounds) await player.play(AssetSource("click.mp3"));
+             if (enableSounds) await player.setVolume(volume); player.play(AssetSource("click.mp3"));
              await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SudokuView()),
