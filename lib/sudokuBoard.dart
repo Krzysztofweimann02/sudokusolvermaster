@@ -200,7 +200,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
     late Color resultColor;
 
     if ((isHover && whichHovered != -1) && index == whichHovered) {
-      resultColor = Colors.amber;
+      resultColor = Colors.brown;
     } else {
       ((getRowNumberAt(index) == 0) ||
           (getRowNumberAt(index) == 1) ||
@@ -234,7 +234,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                   (getRowNumberAt(index) == 5)
 
 
-          ) ? resultColor = Colors.red : resultColor = Colors.blue;
+          ) ? resultColor = Colors.red : resultColor = Colors.orange;
     }
 
     return resultColor;
