@@ -31,20 +31,42 @@ class _SudokuViewState extends State<SudokuView> {
             Padding(
               padding: const EdgeInsets.all(5),
               child: Center(
-                child: Row(
+                child: Column(
                   children: [
-                    Text("Tryb ciemny: ",
-                        style: TextStyle(
-                            color: darkMode ? Colors.white : Colors.black)),
-                    Switch(
-                      value: darkMode,
-                      onChanged: (bool value) {
-                        player.play(AssetSource("click.mp3"));
-                        setState(() {
-                          darkMode = value;
-                        });
-                      },
-                    )
+                    Row(
+                      children: [
+                        Text("Tryb ciemny: ",
+                            style: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black)),
+                        Switch(
+                          value: darkMode,
+                          onChanged: (bool value) {
+                            if (enableSounds)
+                              player.play(AssetSource("click.mp3"));
+                            setState(() {
+                              darkMode = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text("Dźwiękowe: ",
+                            style: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black)),
+                        Switch(
+                          value: enableSounds,
+                          onChanged: (bool value) {
+                            if (enableSounds)
+                              player.play(AssetSource("click.mp3"));
+                            setState(() {
+                              enableSounds = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

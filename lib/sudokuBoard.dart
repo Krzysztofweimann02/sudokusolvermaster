@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'main.dart';
 import 'sudokuSolvingAlgorithm.dart';
 
 class SudokuBoardWidget extends StatefulWidget {
@@ -95,7 +96,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
   void playSound(String sound) async {
     final player = AudioPlayer();
-    await player.play(AssetSource(sound));
+    if (enableSounds) await player.play(AssetSource(sound));
   }
 
   void checkIfMultipleSol() {
