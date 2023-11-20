@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sudokusolvermaster/main.dart';
@@ -13,6 +14,7 @@ class SudokuView extends StatefulWidget {
 }
 
 class _SudokuViewState extends State<SudokuView> {
+  final player = AudioPlayer();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +39,7 @@ class _SudokuViewState extends State<SudokuView> {
                     Switch(
                       value: darkMode,
                       onChanged: (bool value) {
+                        player.play(AssetSource("click.mp3"));
                         setState(() {
                           darkMode = value;
                         });

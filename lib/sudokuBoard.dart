@@ -12,8 +12,6 @@ class SudokuBoardWidget extends StatefulWidget {
 }
 
 class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
-  final player = AudioPlayer();
-
   // creating 81 controllers for user input on board
   final List<TextEditingController> _userInputControllers = List.generate(
       81, (i) => TextEditingController());
@@ -95,11 +93,15 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
     }
   }
 
+  void playSound(String sound) async {
+    final player = AudioPlayer();
+    await player.play(AssetSource(sound));
+  }
+
   void checkIfMultipleSol() {
     if (hasSuccessSolution) {
-      print("DEBUG: Has solution $hasSuccessSolution, $hasMultipleSolutions");
-      if (hasMultipleSolutions) {
-        print("DEBUG: And there are multiple $hasSuccessSolution, $hasMultipleSolutions");
+      playSound("tada.mp3");
+      if (hasMultipleSolutions) {;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -118,7 +120,6 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
           },
         );
       } else {
-        print("DEBUG: And there is only one $hasSuccessSolution, $hasMultipleSolutions");
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -139,7 +140,6 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         );
       }
     } else {
-      print("DEBUG: Has no solutions $hasSuccessSolution, $hasMultipleSolutions");
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -162,17 +162,17 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
   }
 
   void tryToSolve() {
+    playSound("click.mp3");
     setState(() {
-      player.play(AssetSource("click.mp3"));
-
       runSolvingAlg();
       checkIfMultipleSol();
     });
   }
 
   void resetBoard() {
+    playSound("click.mp3");
+
     setState(() {
-      player.play(AssetSource("click.mp3"));
       sudokuBoard = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -190,6 +190,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
             .elementAt(i)
             .text = '';
       }
+      playSound("bin.mp3");
     });
   }
 
