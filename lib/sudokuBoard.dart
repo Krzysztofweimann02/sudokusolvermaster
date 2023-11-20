@@ -327,11 +327,19 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
                             ScaffoldMessenger.of(context).showSnackBar(
                                 snackBar);
-                            Future.delayed(const Duration(seconds: 3), () {
-                              _userInputControllers
-                                  .elementAt(index)
-                                  .text = sudokuBoard[row][col] as String;
-                            });
+                            if (sudokuBoard[row][col] == 0) {
+                              Future.delayed(const Duration(seconds: 3), () {
+                                _userInputControllers
+                                    .elementAt(index)
+                                    .text = '';
+                              });
+                            } else {
+                              Future.delayed(const Duration(seconds: 3), () {
+                                _userInputControllers
+                                    .elementAt(index)
+                                    .text = sudokuBoard[row][col] as String;
+                              });
+                            }
                           }
                         },
                       ),
