@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sudokusolvermaster/SudokuView.dart';
 
-import 'sudokuBoard.dart';
-import 'SudokuView.dart';
-import 'sudokuSolvingAlgorithm.dart';
-
 void main() {
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sudoku Solver',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Sudoku Solver'),
