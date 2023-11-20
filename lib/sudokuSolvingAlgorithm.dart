@@ -2,17 +2,27 @@ import 'package:audioplayers/audioplayers.dart';
 
 class SudokuSolvingAlgorithm {
   late List<List<int>> holdBoard;
+  bool foundFirstSolution = false;
 
   bool solve(List<List<int>> board) {
+    foundFirstSolution = false; // Reset the flag
+    return solveInternal(board);
+  }
+
+  bool solveInternal(List<List<int>> board) {
     for (int row = 0; row < 9; row++) {
       for (int col = 0; col < 9; col++) {
         if (board[row][col] == 0) {
           for (int num = 1; num <= 9; num++) {
             if (isSafe(row, col, num, board)) {
               board[row][col] = num;
-              if (solve(board)) {
-                holdBoard = board;
-                return true;
+              if (solveInternal(board)) {
+                if (foundFirstSolution) {
+                  holdBoard = List.generate(9, (index) => List<int>.from(board[index]));
+                  return true;
+                } else {
+                  foundFirstSolution = true;
+                }
               }
               board[row][col] = 0;
             }

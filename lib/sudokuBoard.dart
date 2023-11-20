@@ -76,14 +76,57 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
 
   void tryToSolve() {
     setState(() {
+      bool hasMultipleSolutions = false; // Reset flag
       if (algorithm.solve(sudokuBoard)) {
-        resultText = "sudoku solved successfully!";
+        if (algorithm.foundFirstSolution) {
+          resultText = "Sudoku solved successfully!";
+          if (algorithm.holdBoard != null) {
+            hasMultipleSolutions = true; // Set the flag that multiple solutions exist
+          }
+        } else {
+          resultText = "Cannot solve that sudoku board";
+        }
+        fetchBoard();
+        updateBoard();
+
+        if (hasMultipleSolutions) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Sudoku rozwiązane!'),
+                content: Text('Jest więcej niż jedno rozwiązań tego sudoku.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Sudoku rozwiązane!'),
+                content: Text('Jest to jedyne możliwe rozwiązanie tego sudoku.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
-      else {
-        resultText = "cannot solve that sudoku board";
-      }
-      fetchBoard();
-      updateBoard();
     });
   }
 
