@@ -315,6 +315,7 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                             String errorMessage = 'Błąd: ';
                             if (e is FormatException) {
                               errorMessage += e.message;
+                              errorMessage += " nie jest prawidłową wartością";
                             } else {
                               errorMessage += 'Nieprawidłowa wartość';
                             }
