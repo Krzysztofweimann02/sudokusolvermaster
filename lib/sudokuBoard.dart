@@ -13,6 +13,7 @@ class SudokuBoardWidget extends StatefulWidget {
 
 class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
   final player = AudioPlayer();
+
   // creating 81 controllers for user input on board
   final List<TextEditingController> _userInputControllers = List.generate(
       81, (i) => TextEditingController());
@@ -71,68 +72,107 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
     setState(() {
       sudokuBoard = algorithm.getResolvedBoard();
     });
+  }
 
+
+  // Mechanical part that is solving the sudokuBoard
+  bool hasSuccessSolution = false;
+  bool hasMultipleSolutions = false; // flaga
+
+  void runSolvingAlg() {
+    if (algorithm.solve(sudokuBoard)) {
+      if (algorithm.foundFirstSolution) {
+        hasSuccessSolution = true;
+        if (algorithm.holdBoard != null) {
+          hasMultipleSolutions = true; // flaga - istnieje więcej niż jedno rozwiązanie
+        }
+      }
+
+      fetchBoard();
+      updateBoard();
+    } else {
+      hasSuccessSolution = false;
+    }
+  }
+
+  void checkIfMultipleSol() {
+    if (hasSuccessSolution) {
+      print("DEBUG: Has solution $hasSuccessSolution, $hasMultipleSolutions");
+      if (hasMultipleSolutions) {
+        print("DEBUG: And there are multiple $hasSuccessSolution, $hasMultipleSolutions");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Sudoku rozwiązane!'),
+              content: Text('Jest więcej niż jedno rozwiązań tego sudoku.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("DEBUG: And there is only one $hasSuccessSolution, $hasMultipleSolutions");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Sudoku rozwiązane!'),
+              content: Text(
+                  'Jest to jedyne możliwe rozwiązanie tego sudoku.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      print("DEBUG: Has no solutions $hasSuccessSolution, $hasMultipleSolutions");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Nie udało się rozwiązać tego sudoku"),
+              content: Text(
+                  'Wprowadzone sudoku nie posiada żadnego możliwego rozwiązania.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          }
+      );
+    } //
   }
 
   void tryToSolve() {
     setState(() {
-      bool hasMultipleSolutions = false; // flaga
-      if (algorithm.solve(sudokuBoard)) {
-        if (algorithm.foundFirstSolution) {
-          resultText = "Sudoku solved successfully!";
-          if (algorithm.holdBoard != null) {
-            hasMultipleSolutions = true; // flaga - istnieje więcej niż jedno rozwiązanie
-          }
-        } else {
-          resultText = "Nie mogę rozwiązać tego sudoku";
-        }
-        fetchBoard();
-        updateBoard();
+      player.play(AssetSource("click.mp3"));
 
-        if (hasMultipleSolutions) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Sudoku rozwiązane!'),
-                content: Text('Jest więcej niż jedno rozwiązań tego sudoku.'),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Sudoku rozwiązane!'),
-                content: Text('Jest to jedyne możliwe rozwiązanie tego sudoku.'),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      }
+      runSolvingAlg();
+      checkIfMultipleSol();
     });
   }
 
   void resetBoard() {
     setState(() {
-      player.play(AssetSource("error.wav"));
+      player.play(AssetSource("click.mp3"));
       sudokuBoard = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -145,8 +185,6 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
       ];
 
-      resultText = '';
-
       for (int i = 0; i < 81; i++) {
         _userInputControllers
             .elementAt(i)
@@ -155,11 +193,6 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
     });
   }
 
-  void printBoard() {
-    print(sudokuBoard);
-  }
-
-  String resultText = '';
   bool isHover = false;
   int whichHovered = -1;
 
@@ -169,39 +202,39 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
     if ((isHover && whichHovered != -1) && index == whichHovered) {
       resultColor = Colors.amber;
     } else {
-    ((getRowNumberAt(index) == 0) ||
-        (getRowNumberAt(index) == 1) ||
-        (getRowNumberAt(index) == 2) ||
-        (getRowNumberAt(index) == 6) ||
-        (getRowNumberAt(index) == 7) ||
-        (getRowNumberAt(index) == 8)) &&
-        ((getNumberAt(index) == 0) ||
-            (getNumberAt(index) == 1) ||
-            (getNumberAt(index) == 2) ||
-            (getNumberAt(index) == 6) ||
-            (getNumberAt(index) == 7) ||
-            (getNumberAt(index) == 8)) ||
-        ((getNumberAt(index) == 3) &&
-            (getRowNumberAt(index) == 3) ||
-            (getNumberAt(index) == 3) &&
-                (getRowNumberAt(index) == 4) ||
-            (getNumberAt(index) == 3) &&
-                (getRowNumberAt(index) == 5) ||
-            (getNumberAt(index) == 4) &&
-                (getRowNumberAt(index) == 3) ||
-            (getNumberAt(index) == 4) &&
-                (getRowNumberAt(index) == 4) ||
-            (getNumberAt(index) == 4) &&
-                (getRowNumberAt(index) == 5) ||
-            (getNumberAt(index) == 5) &&
-                (getRowNumberAt(index) == 3) ||
-            (getNumberAt(index) == 5) &&
-                (getRowNumberAt(index) == 4) ||
-            (getNumberAt(index) == 5) &&
-                (getRowNumberAt(index) == 5)
+      ((getRowNumberAt(index) == 0) ||
+          (getRowNumberAt(index) == 1) ||
+          (getRowNumberAt(index) == 2) ||
+          (getRowNumberAt(index) == 6) ||
+          (getRowNumberAt(index) == 7) ||
+          (getRowNumberAt(index) == 8)) &&
+          ((getNumberAt(index) == 0) ||
+              (getNumberAt(index) == 1) ||
+              (getNumberAt(index) == 2) ||
+              (getNumberAt(index) == 6) ||
+              (getNumberAt(index) == 7) ||
+              (getNumberAt(index) == 8)) ||
+          ((getNumberAt(index) == 3) &&
+              (getRowNumberAt(index) == 3) ||
+              (getNumberAt(index) == 3) &&
+                  (getRowNumberAt(index) == 4) ||
+              (getNumberAt(index) == 3) &&
+                  (getRowNumberAt(index) == 5) ||
+              (getNumberAt(index) == 4) &&
+                  (getRowNumberAt(index) == 3) ||
+              (getNumberAt(index) == 4) &&
+                  (getRowNumberAt(index) == 4) ||
+              (getNumberAt(index) == 4) &&
+                  (getRowNumberAt(index) == 5) ||
+              (getNumberAt(index) == 5) &&
+                  (getRowNumberAt(index) == 3) ||
+              (getNumberAt(index) == 5) &&
+                  (getRowNumberAt(index) == 4) ||
+              (getNumberAt(index) == 5) &&
+                  (getRowNumberAt(index) == 5)
 
 
-        ) ? resultColor = Colors.red : resultColor = Colors.blue;
+          ) ? resultColor = Colors.red : resultColor = Colors.blue;
     }
 
     return resultColor;
@@ -223,99 +256,100 @@ class _SudokuBoardWidgetState extends State<SudokuBoardWidget> {
             itemCount: 81,
             itemBuilder: (context, index) {
               return MouseRegion(
-                onEnter: (_) => setState(() {
-                  isHover = true;
-                  whichHovered = index;
-                }),
-                onExit: (_) => setState(() {
-                  isHover = false;
-                  whichHovered = -1;
-                }),
+                onEnter: (_) =>
+                    setState(() {
+                      isHover = true;
+                      whichHovered = index;
+                    }),
+                onExit: (_) =>
+                    setState(() {
+                      isHover = false;
+                      whichHovered = -1;
+                    }),
                 child: Container(
-                  margin: const EdgeInsets.all(2.0),
-                  padding: const EdgeInsets.all(3.0),
-                  color: setColor(index),
-                  child: Center(
-                    child: TextFormField(
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                    margin: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(3.0),
+                    color: setColor(index),
+                    child: Center(
+                      child: TextFormField(
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                        controller: _userInputControllers.elementAt(index),
+                        onChanged: (text) {
+                          late int previousValue;
+                          late int row;
+                          late int col;
+                          try {
+                            _userInputControllers
+                                .elementAt(index)
+                                .text = text;
+
+                            row = getNumberAt(index);
+                            col = getRowNumberAt(index);
+
+                            int parsedValue = int.parse(text);
+                            previousValue = sudokuBoard[row][col];
+
+                            // Sprawdzenie, czy wartość jest pojedynczą cyfrą
+                            if (parsedValue < 1 || parsedValue > 9) {
+                              throw const FormatException(
+                                  'Wprowadź liczbę od 1 do 9');
+                            }
+
+                            // Sprawdzenie, czy wprowadzona wartość jest bezpieczna w kontekście Sudoku
+                            if (!algorithm.isSafe(
+                                row, col, parsedValue, sudokuBoard)) {
+                              throw const FormatException(
+                                  'Nie z nami takie numery! W wierszu, kolumnie lub kwadracie 3x3 nie możesz wpisać dwóch takich samych liczb');
+                            }
+                            sudokuBoard[row][col] = parsedValue;
+                          } catch (e) {
+                            sudokuBoard[row][col] = previousValue;
+                            String errorMessage = 'Błąd: ';
+                            if (e is FormatException) {
+                              errorMessage += e.message;
+                            } else {
+                              errorMessage += 'Nieprawidłowa wartość';
+                            }
+
+                            final snackBar = SnackBar(
+                              content: Text(errorMessage),
+                              duration: const Duration(seconds: 2),
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                snackBar);
+                            Future.delayed(const Duration(seconds: 3), () {
+                              _userInputControllers
+                                  .elementAt(index)
+                                  .text = '';
+                            });
+                          }
+                        },
                       ),
-                      controller: _userInputControllers.elementAt(index),
-                      onChanged: (text) {
-                        late int previousValue;
-                        late int row;
-                        late int col;
-                        try {
-                          _userInputControllers.elementAt(index).text = text;
-
-                          row = getNumberAt(index);
-                          col = getRowNumberAt(index);
-
-                          int parsedValue = int.parse(text);
-                          previousValue = sudokuBoard[row][col];
-
-                          // Sprawdzenie, czy wartość jest pojedynczą cyfrą
-                          if (parsedValue < 1 || parsedValue > 9) {
-                            throw const FormatException('Wprowadź liczbę od 1 do 9');
-                          }
-
-                          // Sprawdzenie, czy wprowadzona wartość jest bezpieczna w kontekście Sudoku
-                          if (!algorithm.isSafe(row, col, parsedValue, sudokuBoard)) {
-                            throw const FormatException('Nie z nami takie numery! W wierszu, kolumnie lub kwadracie 3x3 nie możesz wpisać dwóch takich samych liczb');
-                          }
-                          sudokuBoard[row][col] = parsedValue;
-                        } catch (e) {
-                          sudokuBoard[row][col] = previousValue;
-                          String errorMessage = 'Błąd: ';
-                          if (e is FormatException) {
-                            errorMessage += e.message;
-                          } else {
-                            errorMessage += 'Nieprawidłowa wartość';
-                          }
-
-                          final snackBar = SnackBar(
-                            content: Text(errorMessage),
-                            duration: const Duration(seconds: 2),
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          Future.delayed(const Duration(seconds: 1), () {
-                            _userInputControllers.elementAt(index).text = '';
-                          });
-                        }
-                      },
-                    ),
-                  )
+                    )
                 ),
               );
             },
           ),
         ),
         const SizedBox(height: 20),
-        Text(resultText),
-
         // Buttons
         Padding(
           padding: const EdgeInsets.all(5),
           child: ElevatedButton(
             onPressed: tryToSolve,
-            child: const Text('Solve'),
+            child: const Text('Rozwiąż'),
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(5),
           child: ElevatedButton(
             onPressed: resetBoard,
-            child: const Text('Reset'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(5),
-          child: ElevatedButton(
-            onPressed: printBoard,
-            child: const Text("DEBUG: PrintBoard()"),
+            child: const Text('Zresetuj'),
           ),
         ),
       ],

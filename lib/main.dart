@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ElevatedButton(
         child: const Text('Start!'),
           onPressed: () {
-            player.play(AssetSource("music.mp3"));
+            player.play(AssetSource("click.mp3"));
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SudokuView()),

@@ -36,6 +36,7 @@ class SudokuSolvingAlgorithm {
 
   List<List<int>> getResolvedBoard() { return holdBoard; }
 
+
   bool isSafe(int row, int col, int num, List<List<int>> board) {
     for (int i = 0; i < 9; i++) {
       if (board[row][i] == num || board[i][col] == num) {
